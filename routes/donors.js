@@ -17,6 +17,13 @@ router.post('/remove', async (req, res) => {
   res.redirect('/');
 });
 
+// Search donors by blood type
+router.get('/search', async (req, res) => {
+  const bloodType = req.query.bloodType;
+  const donors = await Donor.find({ bloodType: bloodType });
+  res.render('searchDonors', { donors: donors });
+});
+
 // Find donors
 router.get('/', async (req, res) => {
   const donors = await Donor.find();

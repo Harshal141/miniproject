@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,32 +9,32 @@
 </head>
 <body>
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
-  <div class="container-fluid">
+<div class="container-fluid">
     <a class="navbar-brand" href="/">Home</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
+    <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="/add">Add User</a>
+        <a class="nav-link active" aria-current="page" href="/add">Add User</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">About Us</a>
+        <a class="nav-link" href="#">About Us</a>
         </li>
-      </ul>
-      <form class="d-flex" action="/search" method="GET">
+    </ul>
+    <form class="d-flex" action="/search" method="GET">
         <input class="form-control me-2" type="search" placeholder="Search" name="bloodType" aria-label="Search">
         <button class="btn btn-outline-success" type="submit">Search</button>
-      </form>    
+    </form> 
     </div>
-  </div>
+</div>
 </nav>
 <div class="container">
-  <br>
-<h1>All Donors</h1>
+<br>
+<h1>Find Donors</h1>
 <ul class="list-group">
-  <% donors.forEach(donor => { %>
+<% donors.forEach(donor => { %>
     <li class="list-group-item d-flex justify-content-between align-items-center">
         Name: <%= donor.name %>, 
         Blood Type: <%= donor.bloodType %>, 
@@ -44,7 +45,7 @@
             <button type="submit" class="btn btn-danger btn-sm">Remove</button>
         </form>
     </li>
-  <% }); %>
+<% }); %>
 </ul>
 </div>
 </body>
