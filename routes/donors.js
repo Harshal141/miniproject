@@ -30,6 +30,11 @@ router.get('/', async (req, res) => {
   res.render('findDonors', { donors: donors });
 });
 
+router.get('/banks', async (req, res) => {
+  const donors = await Donor.find();
+  res.render('bloodBank', { donors: donors });
+});
+
 router.get('/add', (req, res) => {
   res.render('addDonor.ejs');
 });
