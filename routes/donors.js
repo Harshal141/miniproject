@@ -35,6 +35,10 @@ router.get('/banks', async (req, res) => {
   res.render('bloodBank', { donors: donors });
 });
 
+router.get('/about', (req, res) => {
+  res.render('aboutUs.ejs');
+});
+
 router.get('/add', (req, res) => {
   res.render('addDonor.ejs');
 });
