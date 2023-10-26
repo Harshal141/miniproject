@@ -46,21 +46,69 @@
     </header>
 
     <!-- Donor List Section -->
-    <h2>All Donors</h2>
-    <ul class="list-group">
-        <% donors.forEach(donor => { %>
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-                Name: <%= donor.name %><br>
-                Blood Type: <%= donor.bloodType %><br>
-                Phone: <%= donor.phone %><br>
-                Address: <%= donor.address %><br>
-                <form action="/remove" method="POST" style="display: inline;">
-                    <input type="hidden" name="donorId" value="<%= donor._id %>">
-                    <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+<h2>All Donors</h2>
+<ul class="list-group">
+    <% donors.forEach(donor => { %>
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            Name: <%= donor.name %><br>
+            Blood Type: <%= donor.bloodType %><br>
+            Phone: <%= donor.phone %><br>
+            Address: <%= donor.address %><br>
+          <div>
+            <form action="/remove" method="POST" style="display: inline;">
+                <input type="hidden" name="donorId" value="<%= donor._id %>">
+                <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+            </form>
+            <button onclick="showUpdateForm('<%= donor._id %>')" class="btn btn-primary btn-sm">Update</button>
+            <div id="updateForm<%= donor._id %>" style="display: none;">
+                <form id="updateForm" onsubmit="updateDonor(event, '<%= donor._id %>')">
+                    <input type="text" name="name" placeholder="New Name">
+                    <input type="text" name="phone" placeholder="New Phone">
+                    <input type="text" name="address" placeholder="New Address">
+                    <input type="text" name="bloodType" placeholder="New Blood Type">
+                    <button type="submit" class="btn btn-primary btn-sm">Submit</button>
                 </form>
-            </li>
-        <% }); %>
-    </ul>
+            </div>
+          </div>
+        </li>
+    <% }); %>
+</ul>
+
+<script>
+    function showUpdateForm(donorId) {
+        var updateForm = document.getElementById('updateForm' + donorId);
+        if (updateForm.style.display === "none") {
+            updateForm.style.display = "block";
+        } else {
+            updateForm.style.display = "none";
+        }
+    }
+
+    async function updateDonor(event, donorId) {
+        event.preventDefault();
+        const form = event.target;
+        const formData = {
+            name: form.elements.name.value,
+            phone: form.elements.phone.value,
+            address: form.elements.address.value,
+            bloodType: form.elements.bloodType.value
+        };
+        const response = await fetch('/update', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ donorId, ...formData })
+        });
+        if (response.ok) {
+            location.reload();
+        } else {
+            console.error('Error updating donor');
+        }
+    }
+
+</script>
+
 </div>
 </body>
 </html>

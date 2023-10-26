@@ -43,6 +43,19 @@ router.get('/add', (req, res) => {
   res.render('addDonor.ejs');
 });
 
+// Update a donor
+router.post('/update', async (req, res) => {
+  const donorId = req.body.donorId;
+  const { name, phone, address, bloodType } = req.body;
+  try {
+    await Donor.findByIdAndUpdate(donorId, { name, phone, address, bloodType });
+    res.sendStatus(200);
+  } catch (err) {
+    console.error('Error updating donor:', err);
+    res.sendStatus(500); // Send an error status code if there is an error
+  }
+});
+
 router.get('/remove', (req, res) => {
   res.render('removeDonor.ejs');
 });
