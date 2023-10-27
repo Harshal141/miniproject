@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Donor = require('../models/Donor');
+const Bank = require('../models/Bank');
 
 // Add a donor
 router.post('/add', async (req, res) => {
@@ -8,6 +9,23 @@ router.post('/add', async (req, res) => {
   const newDonor = new Donor({ name, phone, address, bloodType });
   await newDonor.save();
   res.redirect('/');
+});
+
+router.post('/addBank', async (req, res) => {
+  const { name, phone, address, staff, bloodstock } = req.body;
+  const newBank = new Bank({ name, phone, address, staff, bloodstock });
+  await newBank.save();
+  res.redirect('/');
+});
+
+router.get('/addhospital', async (req, res) => {
+  const banks = await Bank.find();
+  res.render('addHospital', { banks: banks });
+});
+
+router.get('/banks', async (req, res) => {
+  const banks = await Bank.find();
+  res.render('bloodBank', { banks: banks });
 });
 
 // Remove a donor
@@ -30,10 +48,10 @@ router.get('/', async (req, res) => {
   res.render('findDonors', { donors: donors });
 });
 
-router.get('/banks', async (req, res) => {
-  const donors = await Donor.find();
-  res.render('bloodBank', { donors: donors });
-});
+// router.get('/banks', async (req, res) => {
+//   const donors = await Donor.find();
+//   res.render('bloodBank', { donors: donors });
+// });
 
 router.get('/about', (req, res) => {
   res.render('aboutUs.ejs');
