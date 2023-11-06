@@ -1,0 +1,69 @@
+DATABASE MANAGEMENT SYSTEM LABORATORY
+NAME : Harshal Patil			ROLL NO: 3327
+
+import mysql.connector
+
+conn = mysql.connector.connect(
+	user = 'hp141',
+	host = 'localhost',
+	password = 'hp141',
+	database = 'pyconnector' 
+)
+
+if conn.is_connected():
+	print("Database connected")
+
+cursor = conn.cursor()
+print("Creating table Student")
+#cursor.execute("create table student(rollno int primary key, name varchar(50))")
+cursor.execute("show tables")
+for i in cursor:
+	print(i)
+print("Adding two values to table")
+cursor.execute("insert into student values(3327,'Harshal'),(3320,'test123')")
+cursor.execute("select * from student")
+for i in cursor:
+	print(i)
+print("Updating name test123 to pranav")
+cursor.execute("update student set name = 'pranav' where rollno = 3320")
+cursor.execute("select * from student")
+for i in cursor:
+	print(i)
+print("Deleting roll no 3320")
+cursor.execute("delete from student where rollno = 3320")
+cursor.execute("select * from student")
+for i in cursor:
+	print(i)
+
+// -------------------------------------- output -------------------------------------- //
+
+hw33@hw33-LENOVO-XXXX:~/Desktop/3327$ python3 main.py 
+Database connected
+Creating table Student
+('student',)
+Adding two values to table
+(3320, 'test123')
+(3327, 'Harshal')
+Updating name test123 to pranav
+(3320, 'pranav')
+(3327, 'Harshal')
+Deleting roll no 3320
+(3327, 'Harshal')
+
+// -------------------------------------- my sql code -------------------------------------- //
+
+mysql> create user 'hp141'@'localhost' identified by 'hp141';
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> grant all privileges on *.* to 'hp141'@'localhost' with grant option;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> flush privileges;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> create database pyconnector;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> use pyconnector;
+Database changed
+

@@ -1,0 +1,344 @@
+DATABASE MANAGEMENT SYSTEM LABORATORY
+NAME : Harshal Patil			ROLL NO: 3327
+
+a. Design and Develop SQL DDL statements which demonstrate the use of SQL objects such 
+as Table, View, Index, Sequence, Synonym, different constraints etc.
+b. Write at least 10 SQL queries on the suitable database application using SQL DML
+statements.
+
+mysql> use movie;
+Database changed
+
+mysql> CREATE TABLE Movie (
+    ->     m_id INT PRIMARY KEY,
+    ->     title VARCHAR(255),
+    ->     release_date DATE,
+    ->     rank1 CHAR(1)
+    -> );
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> CREATE TABLE Director (
+    ->     d_id INT PRIMARY KEY,
+    ->     fname VARCHAR(255),
+    ->     lname VARCHAR(255),
+    ->     gender CHAR(1)
+    -> );
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> CREATE TABLE Direct (
+    ->     m_id INT,
+    ->     d_id INT,
+    ->     FOREIGN KEY (m_id) REFERENCES Movie(m_id),
+    ->     FOREIGN KEY (d_id) REFERENCES Director(d_id)
+    -> );
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> CREATE TABLE Actor (
+    ->     a_id INT PRIMARY KEY,
+    ->     f_name VARCHAR(255),
+    ->     l_name VARCHAR(255)
+    -> );
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> CREATE TABLE Cast (
+    ->     m_id INT,
+    ->     a_id INT,
+    ->     role VARCHAR(255));
+Query OK, 0 rows affected (0.02 sec)
+
+----------------------------Insert random values--------------------------
+
+mysql> INSERT INTO Movie (m_id, title, release_date, rank1)
+    -> VALUES
+    ->     (1, 'Dangal', '2016-12-23', 'A'),
+    ->     (2, 'War', '2019-10-02', 'B'),
+    ->     (3, 'PK', '2014-12-19', 'A'),
+    ->     (4, 'Lagaan', '2001-06-15', 'D'),
+    ->     (5, 'Ram-Lakhan', '1989-01-27', 'B'),
+    ->     (6, 'Sholay', '1975-08-15', 'F'),
+    ->     (7, 'Airlift', '2016-01-22', 'A'),
+    ->     (8, 'Kabhi Khushi Kabhie Gham', '2001-12-14', 'C'),
+    ->     (9, 'Shakuntala Devi', '2020-07-31', 'K'),
+    ->     (10, 'Kuch Kuch Hota Hai', '1998-10-16', 'J'),
+    ->     (11, 'Veer-Zaara', '2004-11-12', 'K');
+Query OK, 11 rows affected (0.01 sec)
+Records: 11  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO Director (d_id, fname, lname, gender)
+    -> VALUES
+    ->     (101, 'Nitesh', 'Tiwari', 'M'),
+    ->     (102, 'Siddharth', 'Anand', 'M'),
+    ->     (103, 'Rajkumar', 'Hirani', 'M'),
+    ->     (104, 'Ashutosh', 'Gowariker', 'M'),
+    ->     (105, 'Subhash', 'Ghai', 'M'),
+    ->     (106, 'Ramesh', 'Sippy', 'M'),
+    ->     (107, 'Raja', 'Krishna Menon', 'M'),
+    ->     (108, 'Karan', 'Johar', 'M'),
+    ->     (109, 'Anu', 'Menon', 'F'),
+    ->     (110, 'Karan', 'Johar', 'M'),
+    ->     (111, 'Yash', 'Chopra', 'M');
+Query OK, 11 rows affected (0.01 sec)
+Records: 11  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO Actor (a_id, f_name, l_name)
+    -> VALUES
+    ->     (201, 'Aamir', 'Khan'),
+    ->     (202, 'Hrithik', 'Roshan'),
+    ->     (203, 'Aamir', 'Khan'),
+    ->     (204, 'Aamir', 'Khan'),
+    ->     (205, 'Anil', 'Kapoor'),
+    ->     (206, 'Amitabh', 'Bachchan'),
+    ->     (207, 'Akshay', 'Kumar'),
+    ->     (208, 'Shah Rukh', 'Khan'),
+    ->     (209, 'Vidya', 'Balan'),
+    ->     (210, 'Shah Rukh', 'Khan'),
+    ->     (211, 'Shah Rukh', 'Khan');
+Query OK, 11 rows affected (0.01 sec)
+Records: 11  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO Direct (m_id, d_id)
+    -> VALUES
+    ->     (1, 101),
+    ->     (2, 102),
+    ->     (3, 103),
+    ->     (4, 104),
+    ->     (5, 105),
+    ->     (6, 106),
+    ->     (7, 107),
+    ->     (8, 108),
+    ->     (9, 109),
+    ->     (10, 110),
+    ->     (11, 111);
+Query OK, 11 rows affected (0.04 sec)
+Records: 11  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO Cast (m_id, a_id, role)
+    -> VALUES
+    ->     (1, 201, 'Mahavir Singh Phogat'),
+    ->     (2, 202, 'Kabir'),
+    ->     (3, 203, 'PK'),
+    ->     (4, 204, 'Bhuvan'),
+    ->     (5, 205, 'Lakhan'),
+    ->     (6, 206, 'Jai'),
+    ->     (7, 207, 'Ranjit Katyal'),
+    ->     (8, 208, 'Rahul'),
+    ->     (9, 209, 'Shakuntala Devi'),
+    ->     (10, 210, 'Rahul Khanna'),
+    ->     (11, 211, 'Veer Pratap Singh');
+Query OK, 11 rows affected (0.01 sec)
+Records: 11  Duplicates: 0  Warnings: 0
+
+mysql> select * from movie;
++------+--------------------------+--------------+-------+
+| m_id | title                    | release_date | rank1 |
++------+--------------------------+--------------+-------+
+|    1 | Dangal                   | 2016-12-23   | A     |
+|    2 | War                      | 2019-10-02   | B     |
+|    3 | PK                       | 2014-12-19   | A     |
+|    4 | Lagaan                   | 2001-06-15   | D     |
+|    5 | Ram-Lakhan               | 1989-01-27   | B     |
+|    6 | Sholay                   | 1975-08-15   | F     |
+|    7 | Airlift                  | 2016-01-22   | A     |
+|    8 | Kabhi Khushi Kabhie Gham | 2001-12-14   | C     |
+|    9 | Shakuntala Devi          | 2020-07-31   | K     |
+|   10 | Kuch Kuch Hota Hai       | 1998-10-16   | J     |
+|   11 | Veer-Zaara               | 2004-11-12   | K     |
++------+--------------------------+--------------+-------+
+11 rows in set (0.00 sec)
+
+mysql> select * from director;
++------+-----------+---------------+--------+
+| d_id | fname     | lname         | gender |
++------+-----------+---------------+--------+
+|  101 | Nitesh    | Tiwari        | M      |
+|  102 | Siddharth | Anand         | M      |
+|  103 | Rajkumar  | Hirani        | M      |
+|  104 | Ashutosh  | Gowariker     | M      |
+|  105 | Subhash   | Ghai          | M      |
+|  106 | Ramesh    | Sippy         | M      |
+|  107 | Raja      | Krishna Menon | M      |
+|  108 | Karan     | Johar         | M      |
+|  109 | Anu       | Menon         | F      |
+|  110 | Karan     | Johar         | M      |
+|  111 | Yash      | Chopra        | M      |
++------+-----------+---------------+--------+
+11 rows in set (0.00 sec)
+
+mysql> select * from direct;
++------+------+
+| m_id | d_id |
++------+------+
+|    1 |  101 |
+|    2 |  102 |
+|    3 |  103 |
+|    4 |  104 |
+|    5 |  105 |
+|    6 |  106 |
+|    7 |  107 |
+|    8 |  108 |
+|    9 |  109 |
+|   10 |  110 |
+|   11 |  111 |
++------+------+
+11 rows in set (0.00 sec)
+
+mysql> select * from actor;
++------+-----------+----------+
+| a_id | f_name    | l_name   |
++------+-----------+----------+
+|  201 | Aamir     | Khan     |
+|  202 | Hrithik   | Roshan   |
+|  203 | Aamir     | Khan     |
+|  204 | Aamir     | Khan     |
+|  205 | Anil      | Kapoor   |
+|  206 | Amitabh   | Bachchan |
+|  207 | Akshay    | Kumar    |
+|  208 | Shah Rukh | Khan     |
+|  209 | Vidya     | Balan    |
+|  210 | Shah Rukh | Khan     |
+|  211 | Shah Rukh | Khan     |
++------+-----------+----------+
+11 rows in set (0.00 sec)
+
+mysql> select * from cast;
++------+------+----------------------+
+| m_id | a_id | role                 |
++------+------+----------------------+
+|    1 |  201 | Mahavir Singh Phogat |
+|    2 |  202 | Kabir                |
+|    3 |  203 | PK                   |
+|    4 |  204 | Bhuvan               |
+|    5 |  205 | Lakhan               |
+|    6 |  206 | Jai                  |
+|    7 |  207 | Ranjit Katyal        |
+|    8 |  208 | Rahul                |
+|    9 |  209 | Shakuntala Devi      |
+|   10 |  210 | Rahul Khanna         |
+|   11 |  211 | Veer Pratap Singh    |
++------+------+----------------------+
+11 rows in set (0.00 sec)
+
+-------------Update (increase) the pay of actor working in “Ram-Lakhan” by 60000 Rs.---------------
+
+
+mysql> UPDATE Actor
+    -> SET Pay = Pay + 60000
+    -> WHERE a_id IN (
+    ->     SELECT a_id
+    ->     FROM Cast
+    ->     WHERE m_id = (SELECT m_id FROM Movie WHERE title = 'Ram-Lakhan')
+    -> );
+Query OK, 1 row affected (0.04 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from actor;
++------+-----------+----------+--------+
+| a_id | f_name    | l_name   | Pay    |
++------+-----------+----------+--------+
+|  201 | Aamir     | Khan     |  60000 |
+|  202 | Hrithik   | Roshan   |  70000 |
+|  203 | Aamir     | Khan     |  55000 |
+|  204 | Aamir     | Khan     |  75000 |
+|  205 | Anil      | Kapoor   | 120000 |
+|  206 | Amitabh   | Bachchan |  70000 |
+|  207 | Akshay    | Kumar    |  55000 |
+|  208 | Shah Rukh | Khan     |  75000 |
+|  209 | Vidya     | Balan    |  60000 |
+|  210 | Shah Rukh | Khan     |  70000 |
+|  211 | Shah Rukh | Khan     |  55000 |
++------+-----------+----------+--------+
+11 rows in set (0.00 sec)
+
+---------------. List all actors from (“Dangal”, “War”, “PK”) movies.(IN operator)-------------------
+
+
+mysql> SELECT DISTINCT Actor.f_name, Actor.l_name
+    -> FROM Actor
+    -> WHERE Actor.a_id IN (
+    ->     SELECT Cast.a_id
+    ->     FROM Cast
+    ->     WHERE Cast.m_id IN (
+    ->         SELECT Movie.m_id
+    ->         FROM Movie
+    ->         WHERE Movie.title IN ('Dangal', 'War', 'PK')
+    ->     )
+    -> );
++---------+-------------+
+| f_name  | l_name      |
++---------+-------------+
+| Aamir   | Khan        |
+| Hrithik | Roshan      |
+| Fatima  | Sana Shaikh |
+| Vaani   | Kapoor      |
+| Anushka | Sharma      |
++---------+-------------+
+5 rows in set (0.00 sec)
+
+-----------------Find Maximum and Minimum pay of actor in “PK”.--------------------
+
+mysql> SELECT
+    ->     MAX(pay) AS max_pay_in_pk,
+    ->     MIN(pay) AS min_pay_in_pk
+    -> FROM Actor
+    -> WHERE a_id IN (
+    ->     SELECT a_id
+    ->     FROM Cast
+    ->     WHERE m_id = (
+    ->         SELECT m_id
+    ->         FROM Movie
+    ->         WHERE title = 'PK'
+    ->     )
+    -> );
++---------------+---------------+
+| max_pay_in_pk | min_pay_in_pk |
++---------------+---------------+
+|         70000 |         55000 |
++---------------+---------------+
+1 row in set (0.00 sec)
+
+---------------. List all movie details directed by “Karan Johar” (natural join)-----------------
+
+
+mysql> SELECT *
+    -> FROM Movie
+    -> NATURAL JOIN Direct
+    -> NATURAL JOIN Director
+    -> WHERE Director.fname = 'Karan' AND Director.lname = 'Johar';
++------+------+--------------------------+--------------+-------+-------+-------+--------+
+| d_id | m_id | title                    | release_date | rank1 | fname | lname | gender |
++------+------+--------------------------+--------------+-------+-------+-------+--------+
+|  108 |    8 | Kabhi Khushi Kabhie Gham | 2001-12-14   | C     | Karan | Johar | M      |
+|  110 |   10 | Kuch Kuch Hota Hai       | 1998-10-16   | J     | Karan | Johar | M      |
++------+------+--------------------------+--------------+-------+-------+-------+--------+
+2 rows in set (0.00 sec)
+
+. -----------------Create a view for listing all movies directed by ‘XYZ’ director. Alter this view for listing all movies of ‘XYZ’ director having rank ‘A’------------------------------
+
+
+
+mysql> CREATE VIEW MoviesByDirectorxyz AS
+    -> SELECT Movie.*
+    -> FROM Movie
+    -> INNER JOIN Direct ON Movie.m_id = Direct.m_id
+    -> INNER JOIN Director ON Direct.d_id = Director.d_id
+    -> WHERE Director.fname = 'xyz';
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> SELECT * FROM MoviesByDirectorXYZ;
++------+------------+--------------+-------+
+| m_id | title      | release_date | rank1 |
++------+------------+--------------+-------+
+|    5 | Ram-Lakhan | 1989-01-27   | B     |
++------+------------+--------------+-------+
+1 row in set (0.00 sec)
+
+mysql> CREATE OR REPLACE VIEW MoviesByDirectorxyz AS
+    -> SELECT Movie.*
+    -> FROM Movie
+    -> INNER JOIN Direct ON Movie.m_id = Direct.m_id
+    -> INNER JOIN Director ON Direct.d_id = Director.d_id
+    -> WHERE Director.fname = 'xyz' AND Movie.rank1 = 'A';
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> SELECT * FROM MoviesByDirectorxyz;
+Empty set (0.00 sec)

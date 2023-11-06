@@ -1,0 +1,130 @@
+DATABASE MANAGEMENT SYSTEM LABORATORY
+NAME : Harshal Patil			ROLL NO: 3327
+
+Problem Statement:
+Create table for following schema and insert suitable data into it:
+1. Library(BookNo, name, author, publication, year) 
+2. Library_Audit(BookNo, name, author, publication, year)
+
+mysql> create database librarydb;
+Query OK, 1 row affected (0.04 sec)
+
+mysql> use librarydb;
+Database changed
+
+mysql> create table library(book_no int primary key, name varchar(255), author varchar(255), publication varchar(255), year int);
+Query OK, 0 rows affected (0.06 sec)
+
+mysql> desc library;
++-------------+--------------+------+-----+---------+-------+
+| Field       | Type         | Null | Key | Default | Extra |
++-------------+--------------+------+-----+---------+-------+
+| book_no     | int          | NO   | PRI | NULL    |       |
+| name        | varchar(255) | YES  |     | NULL    |       |
+| author      | varchar(255) | YES  |     | NULL    |       |
+| publication | varchar(255) | YES  |     | NULL    |       |
+| year        | int          | YES  |     | NULL    |       |
++-------------+--------------+------+-----+---------+-------+
+5 rows in set (0.05 sec)
+
+mysql> insert into library values
+    -> (21, 'mockingbird', 'harper', 'harper', 1960),
+    -> (23, '1984', 'george', 'secker', 1949),
+    -> (25, 'great gatsby', 'F', 'charles', 1925),
+    -> (27, 'book4', 'Kroth', 'kroth', 2006),
+    -> (29, 'book5', 'kroth', 'kroth', 2010);
+Query OK, 5 rows affected (0.05 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> select * from library;
++---------+--------------+--------+-------------+------+
+| book_no | name         | author | publication | year |
++---------+--------------+--------+-------------+------+
+|      21 | mockingbird  | harper | harper      | 1960 |
+|      23 | 1984         | george | secker      | 1949 |
+|      25 | great gatsby | F      | charles     | 1925 |
+|      27 | book4        | Kroth  | kroth       | 2006 |
+|      29 | book5        | kroth  | kroth       | 2010 |
++---------+--------------+--------+-------------+------+
+5 rows in set (0.00 sec)
+
+mysql> update library
+    -> set year = 2008
+    -> where book_no = 21;
+Query OK, 1 row affected (0.04 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from library;
++---------+--------------+--------+-------------+------+
+| book_no | name         | author | publication | year |
++---------+--------------+--------+-------------+------+
+|      21 | mockingbird  | harper | harper      | 2008 |
+|      23 | 1984         | george | secker      | 1949 |
+|      25 | great gatsby | F      | charles     | 1925 |
+|      27 | book4        | Kroth  | kroth       | 2006 |
+|      29 | book5        | kroth  | kroth       | 2010 |
++---------+--------------+--------+-------------+------+
+5 rows in set (0.00 sec)
+
+mysql> create table library_audit(sno int auto_increment primary key, old_book varchar(255), new_book varchar(255), operation varchar(255));
+Query OK, 0 rows affected (0.06 sec)
+
+mysql> alter table library_audit add time datetime;
+Query OK, 0 rows affected (0.06 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+
+mysql> create trigger trig_del
+    -> after delete
+    -> on library
+    -> for each row
+    -> begin
+    -> declare action varchar(255);
+    -> declare book varchar(20);
+    -> set book = old.name;
+    -> set action = "delete";
+    -> insert into library_audit(old_book, new_book, operation, time) values(book, "NULL", action, now());
+    -> end;//
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> delete from library where book_no = 21;
+    -> //
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from library_audit;//
++-----+-------------+----------+-----------+---------------------+
+| sno | old_book    | new_book | operation | time
+|
++-----+-------------+----------+-----------+---------------------+
+|   1 | mockingbird | NULL     | delete    | 2023-10-17 13:01:09 |
++-----+-------------+----------+-----------+---------------------+
+1 row in set (0.00 sec)
+mysql> delimiter //
+mysql> create trigger trig_upd
+    -> after update on library
+    -> for each row
+    -> begin
+    -> declare action varchar(255);
+    -> declare Obook varchar(255);
+    -> declare Nbook varchar(255);
+    -> set action = "update";
+    -> set Obook = old.name;
+    -> set Nbook = new.name;
+    -> insert into library_audit(old_book, new_book, operation, time) values(Obook, Nbook, action, now());
+    -> end; //
+Query OK, 0 rows affected (0.01 sec)
+
+
+mysql> update library set name = "moon" where book_no = 27;//
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from library_audit;//
++-----+-------------+----------+-----------+---------------------+
+| sno | old_book    | new_book | operation | time
+|
++-----+-------------+----------+-----------+---------------------+
+|   1 | mockingbird | NULL     | delete    | 2023-10-17 13:01:09 |
+|   2 | book4       | moon     | update    | 2023-10-17 13:07:06 |
++-----+-------------+----------+-----------+---------------------+
+2 rows in set (0.00 sec)

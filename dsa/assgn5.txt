@@ -1,0 +1,100 @@
+DATABASE MANAGEMENT SYSTEM LABORATORY
+NAME : Harshal patil            ROLL NO: 3327
+
+Problem Statement:
+Create a table for the following schema and insert suitable data into it:
+1. N_RollCall(RollNo,Name, Branch, Year, Attendance_Percentage, Event) 
+2. O_RollCall(RollNo,Name, Branch, Year, Attendance_Percentage, Event)
+
+mysql> create database assign5;
+Query OK, 1 row affected (0.01 sec)
+mysql> use assign5;
+Database changed
+mysql> create table n_rollcall(roll_no int, name varchar(255), branch varchar(255), year int, attencdance_percentage int, event varchar(255));
+Query OK, 0 rows affected (0.02 sec)
+mysql> create table o_rollcall(roll_no int, name varchar(255), branch varchar(255), year int, attencdance_percentage int, event varchar(255));
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> insert into n_rollcall values
+    -> (22, "Ram", "mech", 2, 75, "sports"),
+    -> (24, "Patil", "comp", 3, 65, "sports"),
+    -> (26, "tilara", "mech", 2, 90, "cultural"),
+    -> (28, "ghadge", "comp", 3, 80, "cultural"),
+    -> (30, "Harsh", "comp", 3, 80, "cultural");
+Query OK, 5 rows affected (0.05 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> select * from n_rollcall;
++---------+--------+--------+------+------------------------+----------+
+| roll_no | name   | branch | year | attencdance_percentage | event    |
++---------+--------+--------+------+------------------------+----------+
+|      21 | Ram    | mech   |    2 |                     75 | sports   |
+|      23 | Patil  | comp   |    3 |                     65 | sports   |
+|      25 | tilara | mech   |    2 |                     90 | cultural |
+|      27 | ghadge | comp   |    3 |                     80 | cultural |
+|      29 | Harsh  | comp   |    3 |                     80 | cultural |
++---------+--------+--------+------+------------------------+----------+
+5 rows in set (0.00 sec)
+
+mysql> insert into o_rollcall values
+    -> (22, "Ram", "mech", 2, 75, "sports"),
+    -> (24, "Patil", "comp", 3, 65, "sports"),
+    -> (26, "tilara", "mech", 2, 90, "cultural"),
+    -> (28, "ghadge", "comp", 3, 80, "cultural"),
+    -> (30, "Harsh", "comp", 3, 80, "cultural"),
+    -> (31, "limbu", "mech", 3, 60, "sports"),
+    -> (33, "shashu", "comp", 3, 79, "cultural");
+Query OK, 7 rows affected (0.05 sec)
+Records: 7  Duplicates: 0  Warnings: 0
+
+mysql> select * from o_rollcall ;
++---------+--------+--------+------+------------------------+----------+
+| roll_no | name   | branch | year | attencdance_percentage | event    |
++---------+--------+--------+------+------------------------+----------+
+|      22 | Ram    | mech   |    2 |                     75 | sports   |
+|      24 | Patil  | comp   |    3 |                     65 | sports   |
+|      26 | tilara | mech   |    2 |                     90 | cultural |
+|      28 | ghadge | comp   |    3 |                     80 | cultural |
+|      30 | Harsh  | comp   |    3 |                     80 | cultural |
+|      31 | limbu  | mech   |    3 |                     60 | sports   |
+|      33 | shashu | comp   |    3 |                     79 | cultural |
++---------+--------+--------+------+------------------------+----------+
+7 rows in set (0.00 sec)
+
+mysql> delimiter //
+mysql> create procedure P()
+    -> begin
+    -> declare x int;
+    -> declare flag int default 0;
+    -> declare cur cursor for select roll_no from o_rollcall;
+    -> declare continue handler for not found set flag = 1;
+    -> open cur;
+    -> iterator : loop
+    -> if flag = 1 then leave iterator;
+    -> end if;
+    -> fetch cur into x;
+    -> if not exists(select roll_no, name, branch, year, attencdance_percentage, event from n_rollcall where roll_no=x) then insert into n_rollcall select roll_no, name, branch, year, attencdance_percentage, event from o_rollcall where roll_no=x;
+    -> end if;
+    -> end loop iterator;
+    -> close cur;
+    -> end//
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> call P();
+    -> //
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> select * from n_rollcall;
+    -> //
++---------+--------+--------+------+------------------------+----------+
+| roll_no | name   | branch | year | attencdance_percentage | event    |
++---------+--------+--------+------+------------------------+----------+
+|      22 | Ram    | mech   |    2 |                     75 | sports   |
+|      24 | Patil  | comp   |    3 |                     65 | sports   |
+|      26 | tilara | mech   |    2 |                     90 | cultural |
+|      28 | ghadge | comp   |    3 |                     80 | cultural |
+|      30 | Harsh  | comp   |    3 |                     80 | cultural |
+|      31 | limbu  | mech   |    3 |                     60 | sports   |
+|      33 | shashu | comp   |    3 |                     79 | cultural |
++---------+--------+--------+------+------------------------+----------+
+7 rows in set (0.00 sec)

@@ -1,0 +1,116 @@
+DATABASE MANAGEMENT SYSTEM LABORATORY
+NAME: Harshal Patil         ROLL NO: 3327
+
+Problem Statement:
+Create a table for the following schema and insert suitable data into it:
+1. Borrower(Rollin, Name, DateofIssue, NameofBook, Status)
+2. Fine(Roll_no, Date, Amt)
+
+mysql> create database assign4;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> use assign4;
+Database changed
+mysql> create table borrower(
+    -> roll_no int primary key,
+    -> PersonName varchar(255),
+    -> doi date,
+    -> name varchar(255),
+    -> status varchar(255)
+    -> );
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> create table fine(
+    -> roll_no int,
+    -> Date,
+    -> amt int
+    -> );
+Query OK, 0 rows affected (0.06 sec)
+
+mysql> insert into borrower values
+    -> (21, "Harshal", "2023-05-14", "dbms", "i"),
+    -> (23, "patil", "2023-05-17", "oops", "i"),
+    -> (25, "tilara", "2023-05-17", "toc", "i"),
+    -> (27, "ghadge", "2023-05-19", "xyz", "i"),
+    -> (29, "pranav", "2023-05-14", "mp", "i");
+Query OK, 5 rows affected (0.02 sec)
+Records: 5 Duplicates: 0 Warnings: 0
+
+mysql> select * from borrower;
++---------+------------+------------+------+--------+
+| roll_no | PersonName | doi        | name | status |
++---------+------------+------------+------+--------+
+| 21      | Harshal    | 2023-05-14 | dbms | i      |
+| 23      | patil      | 2023-05-17 | oops | i      |
+| 25      | tilara     | 2023-05-17 | toc  | i      |
+| 27      | ghadge     | 2023-05-19 | xyz  | i      |
+| 29      | pranav     | 2023-05-14 | mp   | i      |
++---------+------------+------------+------+--------+
+5 rows in set (0.01 sec)
+
+mysql> show tables;
++-------------------+
+| Tables_in_assign4 |
++-------------------+
+| borrower          |
+| fine              |
++-------------------+
+2 rows in set (0.03 sec)
+
+mysql> delimiter //
+mysql> create procedure P(roll_new int, book_name varchar(20))
+    -> begin
+    -> declare X integer;
+    -> declare continue handler for not found
+    -> begin
+    -> select 'NOT FOUND';
+    -> end;
+    -> select datediff(curdate(), doi) into x from borrower where roll_no = roll_new;
+    -> if (X > 15 && X < 30) then
+    -> insert into fine values(roll_new, curdate(), (X * 5));
+    -> end if;
+    -> if (X > 30) then
+    -> insert into fine values(roll_new, curdate(), (X * 50));
+    -> end if;
+    -> update borrower set status = 'r' where roll_no = roll_new;
+    -> end;
+    -> //
+Query OK, 0 rows affected, 1 warning (0.01 sec)
+
+mysql> call P(27, 'xyz');
+    -> //
+Query OK, 1 row affected (0.02 sec)
+
+mysql> select * from fine;//
++---------+------------+------+
+| roll_no | Date       | amt  |
++---------+------------+------+
+| 27      | 2023-10-14 | 7400 |
++---------+------------+------+
+1 row in set (0.00 sec)
+
+mysql> select * from borrower;
+    -> //
++---------+------------+------------+------+--------+
+| roll_no | PersonName | doi        | name | status |
++---------+------------+------------+------+--------+
+| 21      | Harshal    | 2023-05-14 | dbms | r      |
+| 23      | patil      | 2023-05-17 | oops | i      |
+| 25      | tilara     | 2023-05-17 | toc  | i      |
+| 27      | ghadge     | 2023-05-19 | xyz  | r      |
+| 29      | pranav     | 2023-05-14 | mp   | i      |
++---------+------------+------------+------+--------+
+5 rows in set (0.00 sec)
+
+mysql> call P(21, 'Harshal');//
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from fine;
+    -> //
++---------+------------+------+
+| roll_no | Date       | amt  |
++---------+------------+------+
+| 27      | 2023-10-14 | 7400 |
+| 21      | 2023-10-14 | 7650 |
++---------+------------+------+
+2 rows in set (0.00 sec)

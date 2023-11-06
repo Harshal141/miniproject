@@ -1,0 +1,84 @@
+DATABASE MANAGEMENT SYSTEM LABORATORY
+NAME : Harshal Patil			ROLL NO: 3327
+
+Problem Statement:
+Create table for following schema and insert suitable data into it:
+1. Stud_Marks(RollNo,name, total_marks) 
+2. Result(Roll,Name, Class)
+
+mysql> create database assign6;
+Query OK, 1 row affected (0.06 sec)
+
+mysql> use assign6;
+Database changed
+mysql> create table stud_marks(roll_no int primary key, name varchar(255), total_marks int);
+Query OK, 0 rows affected (0.10 sec)
+
+mysql> insert into stud_marks values
+    -> (22, "stud1", 1100),
+    -> (24, "stud2", 1499),
+    -> (25, "stud3", 980),
+    -> (28, "stud4", 985),
+    -> (30, "stud5", 850);
+Query OK, 5 rows affected (0.05 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> select * from stud_marks;
++---------+--------+-------------+
+| roll_no | name   | total_marks |
++---------+--------+-------------+
+|      22 | stud1  |        1100 |
+|      24 | stud2  |        1499 |
+|      25 | stud3 |         980 |
+|      28 | stud4 |         985 |
+|      30 | stud5 |         850 |
++---------+--------+-------------+
+5 rows in set (0.00 sec)
+
+
+mysql> create table result(roll_no int, name varchar(255), class varchar(255));
+Query OK, 0 rows affected (0.06 sec)
+
+mysql> alter table result add primary key(roll_no);
+Query OK, 0 rows affected (0.05 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> delimiter //
+mysql> create procedure comp_grade(in r int)
+    -> begin
+    -> declare x int;
+    -> declare c varchar(255);
+    -> declare Name varchar(255);
+    -> select stud_marks.name, stud_marks.total_marks into Name, x from stud_marks where roll_no=r;
+    -> if(x<=1500 and x>=990) then set c='Distinction';
+    -> end if;
+    -> if(x<=989 and x>=900) then set c='First';
+    -> end if;
+    -> if(x<=899 and x>=835) then set c='Second';
+    -> end if;
+    -> insert into result values(r, Name, c);
+    -> end; //
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> call comp_grade(22);//
+Query OK, 1 row affected (0.05 sec)
+mysql> call comp_grade(24);//
+Query OK, 1 row affected (0.04 sec)
+mysql> call comp_grade(25);//
+Query OK, 1 row affected (0.05 sec)
+mysql> call comp_grade(28);//
+Query OK, 1 row affected (0.04 sec)
+mysql> call comp_grade(30);//
+Query OK, 1 row affected (0.04 sec)
+
+mysql> select * from result; //
++---------+--------+-------------+
+| roll_no | name   | class       |
++---------+--------+-------------+
+|      22 | stud1  | Distinction |
+|      24 | stud2  | Distinction |
+|      25 | stud3 | First       |
+|      28 | stud4 | First       |
+|      30 | stud5 | Second      |
++---------+--------+-------------+
+5 rows in set (0.00 sec)

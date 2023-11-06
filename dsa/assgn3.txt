@@ -1,0 +1,142 @@
+DATABASE MANAGEMENT SYSTEM LABORATORY
+NAME : Harshal Patil			ROLL NO: 3327
+
+
+-------------------Find all actors from “Sholay” and “K3G”.--------------------------
+
+
+mysql> SELECT Actor.f_name, Actor.l_name
+    -> FROM Actor
+    -> WHERE Actor.a_id IN (
+    ->     SELECT Cast.a_id
+    ->     FROM Cast
+    ->     WHERE Cast.m_id IN (
+    ->         SELECT Movie.m_id
+    ->         FROM Movie
+    ->         WHERE Movie.title IN ('Sholay', 'Kabhi Khushi Kabhie Gham')
+    ->     )
+    -> );
++-----------+----------+
+| f_name    | l_name   |
++-----------+----------+
+| Amitabh   | Bachchan |
+| Shah Rukh | Khan     |
+| Meera     | Khan     |
+| Kajol     | sharma   |
++-----------+----------+
+4 rows in set (0.00 sec)
+
+----------------Show all movie details and director details of the movies released in year 2001------------
+
+mysql> SELECT Movie.*, Director.*
+    -> FROM Movie
+    -> LEFT JOIN Direct ON Movie.m_id = Direct.m_id
+    -> LEFT JOIN Director ON Direct.d_id = Director.d_id
+    -> WHERE YEAR(Movie.release_date) = 2001;
++------+--------------------------+--------------+-------+------+----------+-----------+--------+
+| m_id | title                    | release_date | rank1 | d_id | fname    | lname     | gender |
++------+--------------------------+--------------+-------+------+----------+-----------+--------+
+|    4 | Lagaan                   | 2001-06-15   | D     |  104 | Ashutosh | Gowariker | M      |
+|    8 | Kabhi Khushi Kabhie Gham | 2001-12-14   | C     |  108 | Karan    | Johar     | M      |
++------+--------------------------+--------------+-------+------+----------+-----------+--------+
+2 rows in set (0.00 sec)
+
+
+-------------------Find total amount spent on salaries of actors of “War”.------------------
+
+mysql> SELECT SUM(pay) AS total_salary_spent_in_war
+    -> FROM Actor
+    -> WHERE a_id IN (
+    ->     SELECT a_id
+    ->     FROM Cast
+    ->     WHERE m_id = (
+    ->         SELECT m_id
+    ->         FROM Movie
+    ->         WHERE title = 'War'
+    ->     )
+    -> );
++---------------------------+
+| total_salary_spent_in_war |
++---------------------------+
+|                    120000 |
++---------------------------+
+1 row in set (0.00 sec)
+
+---------------Find total number of actors casted in each movie.------------------------
+
+
+mysql> SELECT
+    ->     Movie.title,
+    ->     (
+    ->         SELECT COUNT(*)
+    ->         FROM Cast
+    ->         WHERE Cast.m_id = Movie.m_id
+    ->     ) AS total_actors
+    -> FROM Movie;
++--------------------------+--------------+
+| title                    | total_actors |
++--------------------------+--------------+
+| Dangal                   |            2 |
+| War                      |            2 |
+| PK                       |            2 |
+| Lagaan                   |            2 |
+| Ram-Lakhan               |            2 |
+| Sholay                   |            2 |
+| Airlift                  |            2 |
+| Kabhi Khushi Kabhie Gham |            2 |
+| Shakuntala Devi          |            2 |
+| Kuch Kuch Hota Hai       |            2 |
+| Veer-Zaara               |            2 |
++--------------------------+--------------+
+11 rows in set (0.00 sec)
+
+---------------------List movie details directed by female director.--------------------------------
+
+mysql> SELECT Movie.*
+    -> FROM Movie
+    -> WHERE Movie.m_id IN (
+    ->     SELECT Direct.m_id
+    ->     FROM Direct
+    ->     JOIN Director ON Direct.d_id = Director.d_id
+    ->     WHERE Director.gender = 'F'
+    -> );
++------+-----------------+--------------+-------+
+| m_id | title           | release_date | rank1 |
++------+-----------------+--------------+-------+
+|    9 | Shakuntala Devi | 2020-07-31   | K     |
++------+-----------------+--------------+-------+
+1 row in set (0.00 sec)
+
+-----------------Give all actors details not casted in “Dangal” (right outer join)------------------
+
+mysql> SELECT Actor.*
+    -> FROM Actor
+    -> RIGHT JOIN Cast ON Actor.a_id = Cast.a_id
+    -> WHERE Cast.m_id IS NULL OR Cast.m_id <> (SELECT m_id FROM Movie WHERE title = 'Dangal');
++------+-----------+--------------+--------+
+| a_id | f_name    | l_name       | Pay    |
++------+-----------+--------------+--------+
+|  202 | Hrithik   | Roshan       |  70000 |
+|  203 | Aamir     | Khan         |  55000 |
+|  204 | Aamir     | Khan         |  75000 |
+|  205 | Anil      | Kapoor       | 120000 |
+|  206 | Amitabh   | Bachchan     |  70000 |
+|  207 | Akshay    | Kumar        |  55000 |
+|  208 | Shah Rukh | Khan         |  75000 |
+|  209 | Vidya     | Balan        |  60000 |
+|  210 | Shah Rukh | Khan         |  70000 |
+|  211 | Shah Rukh | Khan         |  55000 |
+| 1002 | Vaani     | Kapoor       |  50000 |
+| 1003 | Anushka   | Sharma       |  70000 |
+| 1004 | Gracy     | Singh        |  80000 |
+| 1005 | Priya     | Rajput       |  54000 |
+| 1006 | Meera     | Khan         |  90000 |
+| 1007 | Pooja     | Bhatt        |  40000 |
+| 1008 | Kajol     | sharma       |  44000 |
+| 1009 | Vidya     | Balakrishnan |  85000 |
+| 1010 | Tina      | Malhotra     | 100000 |
+| 1011 | Preity    | Zinta        | 120000 |
++------+-----------+--------------+--------+
+20 rows in set (0.00 sec)
+
+
